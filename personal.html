@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <!-- Optional CSS -->
+    <link rel="stylesheet" href="css/box.css">
+
+    <title>Chart</title>
+</head>
+
+<body>
+    <div class="m-1">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link" href="index.html">Play</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="#">Personal Graph</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="score.html">Top 10 Score</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="my-1">
+        <canvas id="chart" height="450" width="600"></canvas>
+    </div>
+
+
+    <!-- Optional JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
+    <script>
+        var lineChartData = {
+            labels: ["1月", "2月", "3月", "4月", "5月", "6月"],
+            datasets: [
+                {
+                    label: "私",
+                    backgroundColor: /*"#f2dae8"*/"rgba(242,218,232,0.6)",
+                    borderColor: /*"#dd9cb4"*/"rgba(221,156,180,0.6)",
+                    data: [67, 65, 66, 70, 71, 77]
+                },
+                {
+                    label: "彼",
+                    backgroundColor: /*"#afd0ef"*/"rgba(175,208,239,0.6)",
+                    borderColor: /*"#fb7dd8"*/"rgba(143,183,221,0.6)",
+                    data: [57, 56, 55, 53, 56, 49]
+                }
+            ]
+
+        }
+
+        $(function () {
+            var ctx = $("#chart").get(0).getContext("2d");
+            var myLineChart = new Chart(ctx, {
+                type: 'line',
+                data: lineChartData,
+                options: {
+                    responsive: true
+                    // 下記を追加すると線がまっすぐになります
+                    /* bezierCurve: false */
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <!-- Optional CSS -->
+    <link rel="stylesheet" href="css/box.css">
+
+    <title>TYPING</title>
+</head>
+
+<body>
+    <div class="m-1">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" href="#">Play</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="personal.html">Personal Graph</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="score.html">Top 10 Score</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="container my-3" id="gry">
+        <div class="row align-items-start">
+            <div class="col-3" id="red">
+                Hello, world!
+            </div>
+            <div class="col-3 ml-auto" id="ble">
+                Hello, world!
+            </div>
+            <div class="w-100"></div>
+            <div class="col-11 ml-auto mr-auto" id="ble">
+                Hello, world!
+            </div>
+        </div>
+
+        <div class="container mt-3" id="gry">
+            <label for="InputText">InputText</label>
+            <input type="input">
+        </div>
+
+        <div class="progress mt-3">
+            <div class="progress-bar w-75 progress-bar-striped" role="progressbar" aria-valuenow="75" aria-valuemin="0"
+                aria-valuemax="100">
+                5 of 4
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="LoginModal" tabindex="-1" role="dialog" aria-labelledby="LoginModalLabel"
+        aria-hidden="true" data-backdrop="static" data-show="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="LoginModalLabel">Login</h5>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="ClassSelect">Select Class</label>
+                            <select class="form-control" id="ClassSelect" required>
+                                <option>5/1</option>
+                                <option>5/2</option>
+                                <option>5/3</option>
+                                <option>5/4</option>
+                                <option>5/5</option>
+                                <option>5/6</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="UserName">UserName</label>
+                            <input type="input" class="form-control" id="UserName" placeholder="Enter user name"
+                                required>
+                        </div>
+                        <div class="form-group form-check">
+                            <input type="checkbox" class="form-check-input" id="CheckGuest">
+                            <label class="form-check-label" for="CheckGuest">Is Guest Login?</label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="LoginModalCloseButton" class="btn btn-primary"
+                        data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
+    <script>
+        // TODO show if session unconnected
+        $('#LoginModal').modal('show');
+        // TODO check before close event
+        $('#LoginModalCloseButton').on(function (e) {
+            alert("not close");
+            return false;
+        });
+    </script>
+</body>
+
+</html>
