@@ -20,24 +20,33 @@
     <div class="m-1">
         <ul class="nav nav-tabs">
             <li class="nav-item">
-                <a class="nav-link" href="index.html">Play</a>
+                <a class="nav-link" href="index.html">Game</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link active" href="#">Personal Graph</a>
+                <a class="nav-link active" href="#">Chart</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="score.html">Top 10 Score</a>
+                <a class="nav-link" href="score.html">Ranking</a>
             </li>
+
+            <div class="ml-auto mt-auto">
+                <span class="font-weight-light">
+                    <label for="UserNameText">User:</label>
+                </span>
+                <input type="input" id="UserNameText" readonly>
+            </div>
         </ul>
     </div>
 
-    <div class="my-1">
-        <canvas id="chart" height="450" width="600"></canvas>
+    <div>
+        <canvas id="chart"></canvas>
     </div>
 
 
     <!-- Optional JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
+    <script src="js/store.legacy.min.js"></script>
+    <script src="js/storedata.js"></script>
 
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -71,10 +80,32 @@
         }
 
         $(function () {
+            $('#UserNameText').val(getCurrentUser());
+
+            var labels = [];
+            var datasets = [
+                {
+                    label: "score[character / minute]",
+                    backgroundColor: /*"#f2dae8"*/"rgba(242,218,232,0.6)",
+                    borderColor: /*"#dd9cb4"*/"rgba(221,156,180,0.6)",
+                    data: []
+                },
+            ];
+
+            var allUser = getAllUserData();
+            $.each(allUser[$('#UserNameText').val()].data, function (index, val) {
+                labels.push(formatDate(new Date(val.start), "MM/DD hh:mm"));
+                datasets[0].data.push(Math.floor(val.getLength * 1000.0 * 60 / val.time));
+            });
+
             var ctx = $("#chart").get(0).getContext("2d");
             var myLineChart = new Chart(ctx, {
                 type: 'line',
-                data: lineChartData,
+                data: {
+                    labels: labels,
+                    datasets: datasets,
+                },
+                data2: lineChartData,
                 options: {
                     responsive: true
                     // 下記を追加すると線がまっすぐになります

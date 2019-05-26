@@ -20,53 +20,45 @@
     <div class="m-1">
         <ul class="nav nav-tabs">
             <li class="nav-item">
-                <a class="nav-link" href="index.html">Play</a>
+                <a class="nav-link" href="index.html">Game</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="personal.html">Personal Graph</a>
+                <a class="nav-link" href="chart.html">Chart</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link active" href="#">Top 10 Score</a>
+                <a class="nav-link active" href="#">Ranking</a>
             </li>
+
+            <div class="ml-auto mt-auto">
+                <span class="font-weight-light">
+                    <label for="UserNameText">User:</label>
+                </span>
+                <input type="input" id="UserNameText" readonly>
+            </div>
         </ul>
     </div>
 
-    <div class="m-1">
+    <div>
         <table class="table table-striped">
-            <caption>Top 10 Score</caption>
             <thead class="thead-dark">
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">First</th>
-                    <th scope="col">Last</th>
-                    <th scope="col">Handle</th>
+                    <th scope="col">User</th>
+                    <th scope="col">score[character / minute]</th>
+                    <th scope="col">time</th>
+                    <th scope="col">count</th>
+                    <th scope="col">date</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                </tr>
-                <tr>
-                    <th scope="row">3</th>
-                    <td>Larry</td>
-                    <td>the Bird</td>
-                    <td>@twitter<div class="badge badge-primary text-wrap m-1">New!</div>
-                    </td>
-                </tr>
+            <tbody id="score_body">
             </tbody>
         </table>
     </div>
 
     <!-- Optional JavaScript -->
+    <script src="js/storedata.js"></script>
+    <script src="js/store.legacy.min.js"></script>
+
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
@@ -77,6 +69,52 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+
+    <script>
+        var allFlatArray = [];
+        $(function () {
+            $('#UserNameText').val(getCurrentUser());
+
+            var allUser = getAllUserData();
+            $.each(allUser, function (user, val) {
+                var byUser = val.data.map(x => {
+                    return {
+                        user: user,
+                        chara_per_sec: (x.getLength * 1000.0 * 60 / x.time),
+                        time: x.time,
+                        get: x.get,
+                        getLength: x.getLength,
+                        date: formatDate(new Date(x.start)),
+                    };
+                });
+                allFlatArray = allFlatArray.concat(byUser);
+            });
+            allFlatArray.sort(function (a, b) {
+                return b.chara_per_sec - a.chara_per_sec;
+            });
+            var len = allFlatArray.length;
+            if (len > 10) {
+                len = 10;
+            }
+            allFlatArray.slice(0, len);
+
+            $.each(allFlatArray, function (index, val) {
+                var line =
+                    '<tr>' +
+                    '<th scope="row">' + (index + 1) + '</th>' +
+                    '<td>' + val.user + '</td>' +   // user
+                    '<td>' + Math.floor(val.chara_per_sec) + '</td>' +
+                    '<td>' + Math.floor(val.time / 100) / 10 + 'sec</td>' +
+                    '<td>' + val.getLength + ' characters (' + val.get + ' words)' + '</td>' +   //chara count(word count)
+                    '<td>' + val.date + '</td>' +   // date
+                    '</tr>';
+
+                $("#score_body").append($(line));
+                index++;
+            });
+
+        });
+    </script>
 </body>
 
 </html>

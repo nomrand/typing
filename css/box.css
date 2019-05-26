@@ -1,10 +1,44 @@
-#ble {
-    background-color: blue;
-}
-#red {
-    background-color: red;
+html, body {
+    height: 100%;
 }
 
-#gry {
-    background-color: gray;
+#gscreen {
+    background-color: #c2d3dd;
+
+    position: relative;
+    overflow: hidden;
+}
+
+.wordcell {
+    width: 100px;
+    display: block;
+    position: absolute;
+
+    top: -10%;
+}
+
+.wordnormal {
+    color: white;
+    background-color: #6591b6;
+}
+.wordwarning {
+    color: white;
+    background-color: #d78114;
+}
+.wordfatal {
+    color: white;
+    background-color: #cb5393;
+}
+
+
+.cirIndicator {
+    color: white;
+    
+    display:inline-block;
+    width: 10px;
+    height: 10px;
+}
+
+.wordcircle {
+    background-color: #6591b6;
 }
