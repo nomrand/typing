@@ -152,7 +152,7 @@
                         // CREATE
                         createWord(WordData[WordIndex++]);
                     } else if ($(element).text().startsWith(val)) {
-                        if ($(element).text().length - val.length == 2) {
+                        if ($(element).text().length - val.length <= 2) {
                             $(element).removeClass("wordnormal");
                             $(element).removeClass("wordwarning");
                             $(element).addClass("wordfatal");

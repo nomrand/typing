@@ -10,8 +10,8 @@ html, body {
 }
 
 .wordcell {
-    width: 100px;
-    display: block;
+    width: auto;
+    display: inline-block;
     position: absolute;
 
     top: -10%;
