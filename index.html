@@ -55,7 +55,7 @@
 
             <div class="w-100">
                 <span class="w-100 font-weight-light">
-                    <label for="InputText">Press Word & Enter:</label>
+                    <label for="InputText">Press Word Below:</label>
                 </span>
                 <input class="w-100" type="input" id="InputText" disabled>
             </div>
@@ -137,24 +137,6 @@
                 $(this).prop("disabled", true);
             });
 
-            $('#InputText').keypress(function (e) {
-                if (e.which == 13) {
-                    var val = $('#InputText').val();
-                    if (!val) {
-                        return false;
-                    }
-                    $(".wordcell").each(function (index, element) {
-                        if ($(element).text() == val) {
-                            $(element).trigger("dltFnc");
-                        }
-                    });
-
-                    $('#InputText').val('');
-                    return false;
-                }
-            });
-
-
             $('#InputText').keyup(function (e) {
                 var val = $('#InputText').val();
                 if (!val) {
@@ -163,13 +145,22 @@
 
                 $(".wordcell").each(function (index, element) {
                     if ($(element).text() == val) {
-                        $(element).removeClass("wordnormal");
-                        $(element).removeClass("wordwarning");
-                        $(element).addClass("wordfatal");
+                        // GET WORD
+                        $(element).trigger("dltFnc");
+                        $('#InputText').val('');
+
+                        // CREATE
+                        createWord(WordData[WordIndex++]);
                     } else if ($(element).text().startsWith(val)) {
-                        $(element).removeClass("wordnormal");
-                        $(element).removeClass("wordfatal");
-                        $(element).addClass("wordwarning");
+                        if ($(element).text().length - val.length == 2) {
+                            $(element).removeClass("wordnormal");
+                            $(element).removeClass("wordwarning");
+                            $(element).addClass("wordfatal");
+                        } else {
+                            $(element).removeClass("wordnormal");
+                            $(element).removeClass("wordfatal");
+                            $(element).addClass("wordwarning");
+                        }
                     } else {
                         $(element).removeClass("wordwarning");
                         $(element).removeClass("wordfatal");
@@ -216,6 +207,7 @@
         let loseLength = 0;
 
         let ResultData = {};
+        let WordIndex = 0;
         function gameStart() {
             // INIT
             if (typeof WordData == 'undefined') {
@@ -226,6 +218,8 @@
             }
             WordData.sort(function () { return Math.random() - .5 });
             ResultData = {};
+            WordIndex = 0;
+
             getCount = 0;
             getLength = 0;
             loseCount = 0;
@@ -237,15 +231,11 @@
             $('#InputText').prop("disabled", false);
 
             for (var i = 0; i < WordMax; i++) {
-                (function (word) {
-                    setTimeout(function () {
-                        createWord(word);
-                    }, 3000 * i);
-                })(WordData[i]);
-
                 var wordCircle = $('<div class="rounded-circle cirIndicator wordcircle"></div>');
                 $("#words_to_clear").append(wordCircle);
             }
+
+            createWord(WordData[WordIndex++]);
         }
 
         function winlose(isWin, word) {
@@ -266,6 +256,10 @@
         }
 
         function createWord(word) {
+            if (!word) {
+                return false;
+            }
+
             var wordDom = $('<div class="rounded text-center p-2 wordcell wordnormal"></div>');
             wordDom.text(word);
             $("#gscreen").append(wordDom);
