@@ -1,0 +1,32 @@
+html, body {
+    height: 100%;
+}
+
+.key {
+    position: relative;
+    display: inline-block;
+    width: 6%;
+    height: auto;
+
+    border: 1px solid gray;
+    background-image: url("../img/1x1gray.png");
+    background-repeat: repeat;
+}
+
+.key img {
+    width: 100%;
+}
+.key div {
+    z-index: 100;
+    position: absolute;
+    display: inline-block;
+
+    text-align: center;
+
+    height: 100%;
+    width: 100%;
+    padding-top: 20%;
+
+    top:0px;
+    left:0px;
+}
