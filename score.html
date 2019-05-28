@@ -13,7 +13,7 @@
     <!-- Optional CSS -->
     <link rel="stylesheet" href="css/box.css">
 
-    <title>SCORE</title>
+    <title>TYPING GAME -score-</title>
 </head>
 
 <body>
@@ -43,10 +43,11 @@
             <thead class="thead-dark">
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">User</th>
+                    <th scope="col">user</th>
+                    <th scope="col">mode</th>
                     <th scope="col">score[character / minute]</th>
                     <th scope="col">time</th>
-                    <th scope="col">count</th>
+                    <th scope="col">get count</th>
                     <th scope="col">date</th>
                 </tr>
             </thead>
@@ -80,6 +81,7 @@
                 var byUser = val.data.map(x => {
                     return {
                         user: user,
+                        mode: x.mode,
                         chara_per_sec: (x.getLength * 1000.0 * 60 / x.time),
                         time: x.time,
                         get: x.get,
@@ -96,13 +98,14 @@
             if (len > 10) {
                 len = 10;
             }
-            allFlatArray.slice(0, len);
+            allFlatArray = allFlatArray.slice(0, len);
 
             $.each(allFlatArray, function (index, val) {
                 var line =
                     '<tr>' +
                     '<th scope="row">' + (index + 1) + '</th>' +
                     '<td>' + val.user + '</td>' +   // user
+                    '<td>' + val.mode + '</td>' +   // mode
                     '<td>' + Math.floor(val.chara_per_sec) + '</td>' +
                     '<td>' + Math.floor(val.time / 100) / 10 + 'sec</td>' +
                     '<td>' + val.getLength + ' characters (' + val.get + ' words)' + '</td>' +   //chara count(word count)

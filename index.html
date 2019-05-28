@@ -13,7 +13,7 @@
     <!-- Optional CSS -->
     <link rel="stylesheet" href="css/box.css">
 
-    <title>TYPING</title>
+    <title>TYPING GAME -main-</title>
 </head>
 
 <body>
@@ -33,7 +33,7 @@
                 <span class="font-weight-light">
                     <label for="UserNameText">User:</label>
                 </span>
-                <input type="input" id="UserNameText">
+                <input type="input" id="UserNameText" placeholder="INPUT USER NAME" required>
             </div>
         </ul>
     </div>
@@ -46,24 +46,22 @@
         </div>
 
         <div class="h-25">
-            <div class="row">
-                <div class="col text-left" id="words_to_clear">
-                    <span class="font-weight-light">Words Remain:</span>
-                    <!-- Word Circle -->
+            <div class="text-left" id="words_to_clear">
+                <span class="font-weight-light">Words Remain:</span>
+                <!-- Word Circle -->
+            </div>
+
+            <div class="w-100 mt-1">
+                <input class="w-100" type="input" id="InputText" placeholder="INPUT WORD HERE" disabled>
+            </div>
+            <div class="input-group w-100 mt-1">
+                <select class="custom-select" id="ModeSelect" required>
+                    <!-- Mode Select -->
+                </select>
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" id="GameStartButton" disabled>Game Start</button>
                 </div>
             </div>
-
-            <div class="w-100">
-                <span class="w-100 font-weight-light">
-                    <label for="InputText">Press Word Below:</label>
-                </span>
-                <input class="w-100" type="input" id="InputText" disabled>
-            </div>
-
-            <button class="btn btn-outline-secondary mt-3" id="GameStartButton" disabled>Game Start</button>
-            <!--
-                <button class="btn" id="UserDataClearButton">All User Data Clear</button>
-            -->
         </div>
     </div>
 
@@ -76,16 +74,20 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-6">User:</div>
+                        <div class="col-6">user:</div>
                         <div class="col-6" id="res_user"></div>
-                        <div class="col-6">Started at:</div>
-                        <div class="col-6" id="res_start"></div>
-                        <div class="col-6">Time:</div>
+                        <div class="col-6">mode:</div>
+                        <div class="col-6" id="res_mode"></div>
+                        <div class="col-6">score:</div>
+                        <div class="col-6" id="res_score"></div>
+                        <div class="col-6">time:</div>
                         <div class="col-6" id="res_time"></div>
                         <div class="col-6">success:</div>
                         <div class="col-6" id="res_get"></div>
                         <div class="col-6">fail:</div>
                         <div class="col-6" id="res_lose"></div>
+                        <div class="col-6">started at:</div>
+                        <div class="col-6" id="res_start"></div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -119,20 +121,19 @@
         crossorigin="anonymous"></script>
 
     <script>
-        // TODO show if session unconnected
-        //        $('#LoginModal').modal('show');
-        // TODO check before close event
-        //     $('#LoginModalCloseButton').on(function (e) {
-        //         alert("not close");
-        //         return false;
-        //     });
-
         $(function () {
-            $('#UserDataClearButton').click(function () {
-                clearAllUserData();
+            // INIT
+            $(WordData).each(function (index, element) {
+                var optionDom;
+                if (index == 0) {
+                    optionDom = $("<option value='0' selected>" + element.mode + "</option>");
+                } else {
+                    optionDom = $("<option value='" + index + "'>" + element.mode + "</option>");
+                }
+                $("#ModeSelect").append(optionDom);
             });
+
             $('#GameStartButton').click(function () {
-                // TODO START
                 gameStart();
                 $(this).prop("disabled", true);
             });
@@ -148,9 +149,6 @@
                         // GET WORD
                         $(element).trigger("dltFnc");
                         $('#InputText').val('');
-
-                        // CREATE
-                        createWord(WordData[WordIndex++]);
                     } else if ($(element).text().startsWith(val)) {
                         if ($(element).text().length - val.length <= 2) {
                             $(element).removeClass("wordnormal");
@@ -178,7 +176,6 @@
             $('#UserNameText').val(getCurrentUser());
             loginUser();
 
-
             $('#ResultSaveClose').click(function (e) {
                 appendUserData($('#UserNameText').val(), ResultData);
             });
@@ -199,66 +196,63 @@
             return true;
         }
 
-        let startTime = 0;
-
-        let getCount = 0;
-        let getLength = 0;
-        let loseCount = 0;
-        let loseLength = 0;
-
         let ResultData = {};
-        let WordIndex = 0;
+        let SelectedWordData = {};
+        let SelectedWordSpeed = 20000;
         function gameStart() {
-            // INIT
-            if (typeof WordData == 'undefined') {
-                WordData = [];
-            }
-            if (typeof WordMax == 'undefined' || WordMax > WordData.length) {
-                WordMax = WordData.length;
-            }
-            WordData.sort(function () { return Math.random() - .5 });
-            ResultData = {};
-            WordIndex = 0;
+            SelectedWordData = WordData[$("#ModeSelect").val()].data;
+            SelectedWordSpeed = WordData[$("#ModeSelect").val()].speed;
+            SelectedWordData = SelectedWordData.sort(
+                function () { return Math.random() - .5 }
+            ).slice(0, WordData[$("#ModeSelect").val()].max);
 
-            getCount = 0;
-            getLength = 0;
-            loseCount = 0;
-            loseLength = 0;
-            startTime = Date.now();
+            ResultData = {
+                start: Date.now(),
+                time: 0,
+                get: 0,
+                getLength: 0,
+                lose: 0,
+                loseLength: 0,
+                mode: WordData[$("#ModeSelect").val()].mode,
+            };
 
             $('#UserNameText').prop("disabled", true);
+            $('#ModeSelect').prop("disabled", true);
             $('#InputText').val('');
             $('#InputText').prop("disabled", false);
 
-            for (var i = 0; i < WordMax; i++) {
+            for (var i = 0; i < SelectedWordData.length; i++) {
                 var wordCircle = $('<div class="rounded-circle cirIndicator wordcircle"></div>');
                 $("#words_to_clear").append(wordCircle);
             }
 
-            createWord(WordData[WordIndex++]);
+            createWord();
         }
 
         function winlose(isWin, word) {
             if (isWin) {
-                getCount++;
-                getLength += word.length;
+                ResultData.get++;
+                ResultData.getLength += word.length;
             } else {
-                loseCount++;
-                loseLength += word.length;
+                ResultData.lose++;
+                ResultData.loseLength += word.length;
             }
 
             var words = $(".wordcircle");
             words.first().remove();
 
-            if (getCount + loseCount == WordMax) {
+            if (SelectedWordData.length == 0) {
                 gameEnd();
+            } else {
+                createWord();
             }
         }
 
-        function createWord(word) {
-            if (!word) {
+        function createWord() {
+            if (SelectedWordData.length == 0) {
                 return false;
             }
+            let word = SelectedWordData.shift();
 
             var wordDom = $('<div class="rounded text-center p-2 wordcell wordnormal"></div>');
             wordDom.text(word);
@@ -273,7 +267,7 @@
                 {
                     top: "100%",
                 },
-                20000, "linear", function () {
+                SelectedWordSpeed, "linear", function () {
                     winlose(false, word);
                 }
             );
@@ -287,7 +281,6 @@
                     },
                     100, "linear", function () {
                         $(this).remove();
-
                         winlose(true, word);
                     }
                 );
@@ -295,21 +288,15 @@
         }
 
         function gameEnd() {
-            var endTime = Date.now();
-            ResultData = {
-                start: startTime,
-                time: endTime - startTime,
-                get: getCount,
-                getLength: getLength,
-                lose: loseCount,
-                loseLength: loseLength,
-            };
+            ResultData.time = Date.now() - ResultData.start;
 
             $('#res_user').text($('#UserNameText').val());
+            $('#res_mode').text(ResultData.mode);
             $('#res_start').text(formatDate(new Date(ResultData.start)));
             $('#res_time').text((Math.floor(ResultData.time / 100) / 10) + "sec");
             $('#res_get').text(ResultData.get + "words (" + ResultData.getLength + ")");
             $('#res_lose').text(ResultData.lose + "words (" + ResultData.loseLength + ")");
+            $('#res_score').text(Math.floor(ResultData.getLength * 1000.0 * 60 / ResultData.time));
             $('#ResultModal').modal('show');
 
             $('#UserNameText').prop("disabled", false);
@@ -317,6 +304,7 @@
             $('#InputText').prop("disabled", true);
 
             $('#GameStartButton').prop("disabled", false);
+            $('#ModeSelect').prop("disabled", false);
         }
     </script>
 </body>

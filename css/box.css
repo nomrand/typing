@@ -13,8 +13,6 @@ html, body {
     width: auto;
     display: inline-block;
     position: absolute;
-
-    top: -10%;
 }
 
 .wordnormal {
