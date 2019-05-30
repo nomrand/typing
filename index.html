@@ -40,7 +40,7 @@
 
     <div class="container" style="height: 90%;">
         <div class="h-75">
-            <div class="h-100 rounded" id="gscreen">
+            <div class="h-100 rounded p-3" id="gscreen">
                 <!--GAME SCREEN -->
             </div>
         </div>
@@ -226,7 +226,7 @@
                 $("#words_to_clear").append(wordCircle);
             }
 
-            createWord();
+            createWord(SelectedWordData.shift());
         }
 
         function winlose(isWin, word) {
@@ -244,15 +244,14 @@
             if (SelectedWordData.length == 0) {
                 gameEnd();
             } else {
-                createWord();
+                createWord(SelectedWordData.shift());
             }
         }
 
-        function createWord() {
-            if (SelectedWordData.length == 0) {
+        function createWord(word) {
+            if (!word) {
                 return false;
             }
-            let word = SelectedWordData.shift();
 
             var wordDom = $('<div class="rounded text-center p-2 wordcell wordnormal"></div>');
             wordDom.text(word);
@@ -267,22 +266,39 @@
                 {
                     top: "100%",
                 },
-                SelectedWordSpeed, "linear", function () {
-                    winlose(false, word);
-                }
+                {
+                    duration: SelectedWordSpeed,
+                    easing: 'linear',
+                    // step: function (now) {
+                    //     if (WordData[$("#ModeSelect").val()].rotate == true) {
+                    //         $(this).css({
+                    //             transform: 'rotate(' + Math.floor(now / 100 * 90) + 'deg)',
+                    //         });
+                    //     }
+                    // },
+                    complete: function () {
+                        $(this).remove();
+                        winlose(false, $(this).text());
+                    },
+                },
             );
 
             wordDom.bind("dltFnc", function () {
-                $(this).stop();
+                // delete all animate queue(=true), and stop current pos(=false)
+                $(this).stop(true, false);
                 $(this).animate(
                     {
                         height: "0%",
                         width: "0%",
                     },
-                    100, "linear", function () {
-                        $(this).remove();
-                        winlose(true, word);
-                    }
+                    {
+                        duration: 100,
+                        easing: 'linear',
+                        complete: function () {
+                            $(this).remove();
+                            winlose(true, $(this).text());
+                        },
+                    },
                 );
             });
         }
