@@ -11,7 +11,7 @@
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
     <!-- Optional CSS -->
-    <link rel="stylesheet" href="css/box.css">
+    <link rel="stylesheet" href="css/main.css">
 
     <title>TYPING GAME -score-</title>
 </head>
@@ -57,8 +57,8 @@
     </div>
 
     <!-- Optional JavaScript -->
+    <script src="lib/js/store.legacy.min.js"></script>
     <script src="js/storedata.js"></script>
-    <script src="js/store.legacy.min.js"></script>
 
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -72,13 +72,18 @@
         crossorigin="anonymous"></script>
 
     <script>
-        var allFlatArray = [];
+        // show how many lines
+        const DISP_RANK_MAX = 20;
+
         $(function () {
+            // *** set User ***
             $('#UserNameText').val(getCurrentUser());
 
-            var allUser = getAllUserData();
-            $.each(allUser, function (user, val) {
-                var byUser = val.data.map(x => {
+            // *** get user data & arrange ***
+            // convert each-user-data to flat array 
+            let allFlatArray = [];
+            $.each(getAllUserData(), function (user, val) {
+                let byUser = val.data.map(x => {
                     return {
                         user: user,
                         mode: x.mode,
@@ -91,15 +96,18 @@
                 });
                 allFlatArray = allFlatArray.concat(byUser);
             });
+            // sort by score
             allFlatArray.sort(function (a, b) {
                 return b.chara_per_sec - a.chara_per_sec;
             });
-            var len = allFlatArray.length;
-            if (len > 10) {
-                len = 10;
+            // cut over data
+            let len = allFlatArray.length;
+            if (len > DISP_RANK_MAX) {
+                len = DISP_RANK_MAX;
             }
             allFlatArray = allFlatArray.slice(0, len);
 
+            // *** show socre table ***
             $.each(allFlatArray, function (index, val) {
                 var line =
                     '<tr>' +

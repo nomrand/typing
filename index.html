@@ -11,6 +11,7 @@
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
     <!-- Optional CSS -->
+    <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/box.css">
 
     <title>TYPING GAME -main-</title>
@@ -107,9 +108,9 @@
     </div>
 
     <!-- Optional JavaScript -->
+    <script src="lib/js/store.legacy.min.js"></script>
     <script src="js/data.js"></script>
     <script src="js/storedata.js"></script>
-    <script src="js/store.legacy.min.js"></script>
 
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
@@ -122,8 +123,9 @@
 
     <script>
         $(function () {
-            // INIT
-            $(WordData).each(function (index, element) {
+            // *** initilize element ***
+            // create data options
+            $(WORD_DATA).each(function (index, element) {
                 var optionDom;
                 if (index == 0) {
                     optionDom = $("<option value='0' selected>" + element.mode + "</option>");
@@ -133,9 +135,19 @@
                 $("#ModeSelect").append(optionDom);
             });
 
+            // set events
+            setEvents()
+
+            // *** set User ***
+            $('#UserNameText').val(getCurrentUser());
+
+            // *** set Initial state ***
+            setElementEnable(true);
+        });
+
+        function setEvents() {
             $('#GameStartButton').click(function () {
                 gameStart();
-                $(this).prop("disabled", true);
             });
 
             $('#InputText').keyup(function (e) {
@@ -146,20 +158,23 @@
 
                 $(".wordcell").each(function (index, element) {
                     if ($(element).text() == val) {
-                        // GET WORD
+                        // word cleared
                         $(element).trigger("dltFnc");
                         $('#InputText').val('');
                     } else if ($(element).text().startsWith(val)) {
                         if ($(element).text().length - val.length <= 2) {
+                            // word editing (nearly cleared)
                             $(element).removeClass("wordnormal");
                             $(element).removeClass("wordwarning");
                             $(element).addClass("wordfatal");
                         } else {
+                            // word editing
                             $(element).removeClass("wordnormal");
                             $(element).removeClass("wordfatal");
                             $(element).addClass("wordwarning");
                         }
                     } else {
+                        // word not edting
                         $(element).removeClass("wordwarning");
                         $(element).removeClass("wordfatal");
                         $(element).addClass("wordnormal");
@@ -170,41 +185,26 @@
             });
 
             $('#UserNameText').keyup(function (e) {
-                loginUser();
-                return false;
+                setCurrentUser($('#UserNameText').val());
+                setElementEnable(true);
             });
-            $('#UserNameText').val(getCurrentUser());
-            loginUser();
 
             $('#ResultSaveClose').click(function (e) {
                 appendUserData($('#UserNameText').val(), ResultData);
             });
-        });
-
-
-        function loginUser() {
-            var val = $('#UserNameText').val();
-            setCurrentUser(val);
-            if (!val) {
-                $('.nav-link').addClass('disabled');
-                $('#GameStartButton').prop("disabled", true);
-                return false;
-            }
-
-            $('.nav-link').removeClass('disabled');
-            $('#GameStartButton').prop("disabled", false);
-            return true;
         }
 
         let ResultData = {};
         let SelectedWordData = {};
         let SelectedWordSpeed = 20000;
         function gameStart() {
-            SelectedWordData = WordData[$("#ModeSelect").val()].data;
-            SelectedWordSpeed = WordData[$("#ModeSelect").val()].speed;
+            setElementEnable(false);
+
+            SelectedWordData = WORD_DATA[$("#ModeSelect").val()].data;
+            SelectedWordSpeed = WORD_DATA[$("#ModeSelect").val()].speed;
             SelectedWordData = SelectedWordData.sort(
                 function () { return Math.random() - .5 }
-            ).slice(0, WordData[$("#ModeSelect").val()].max);
+            ).slice(0, WORD_DATA[$("#ModeSelect").val()].max);
 
             ResultData = {
                 start: Date.now(),
@@ -213,13 +213,8 @@
                 getLength: 0,
                 lose: 0,
                 loseLength: 0,
-                mode: WordData[$("#ModeSelect").val()].mode,
+                mode: WORD_DATA[$("#ModeSelect").val()].mode,
             };
-
-            $('#UserNameText').prop("disabled", true);
-            $('#ModeSelect').prop("disabled", true);
-            $('#InputText').val('');
-            $('#InputText').prop("disabled", false);
 
             for (var i = 0; i < SelectedWordData.length; i++) {
                 var wordCircle = $('<div class="rounded-circle cirIndicator wordcircle"></div>');
@@ -270,7 +265,7 @@
                     duration: SelectedWordSpeed,
                     easing: 'linear',
                     // step: function (now) {
-                    //     if (WordData[$("#ModeSelect").val()].rotate == true) {
+                    //     if (WORD_DATA[$("#ModeSelect").val()].rotate == true) {
                     //         $(this).css({
                     //             transform: 'rotate(' + Math.floor(now / 100 * 90) + 'deg)',
                     //         });
@@ -315,12 +310,35 @@
             $('#res_score').text(Math.floor(ResultData.getLength * 1000.0 * 60 / ResultData.time));
             $('#ResultModal').modal('show');
 
-            $('#UserNameText').prop("disabled", false);
-            $('#InputText').val('');
-            $('#InputText').prop("disabled", true);
+            setElementEnable(true);
+        }
 
-            $('#GameStartButton').prop("disabled", false);
-            $('#ModeSelect').prop("disabled", false);
+        function setElementEnable(isGameStop) {
+            var username = $('#UserNameText').val();
+
+            // *** for Global Control ***
+            // if isGameStop = true && have username, can control
+            if (isGameStop && username) {
+                $('.nav-link').removeClass('disabled');
+            } else {
+                $('.nav-link').addClass('disabled');
+            }
+
+            // *** for Normal Control ***
+            // if isGameStop = true, can control
+            $('#UserNameText').prop("disabled", !isGameStop);
+
+            // *** for Game Control ***
+            // setting changed, always reset
+            $('#InputText').val('');
+
+            // Game Setting (if isGameStop = true, can control)
+            // * especialy if no username, can not start
+            $('#GameStartButton').prop("disabled", !isGameStop || !username);
+            $('#ModeSelect').prop("disabled", !isGameStop);
+
+            // Game Control (if isGameStop = true, can not control)
+            $('#InputText').prop("disabled", isGameStop);
         }
     </script>
 </body>

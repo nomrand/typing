@@ -1,4 +1,4 @@
-let WordData = [
+let WORD_DATA = [
     {
         mode: "step1(alphabet)",
         speed: 20000,

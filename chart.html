@@ -11,7 +11,7 @@
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
     <!-- Optional CSS -->
-    <link rel="stylesheet" href="css/box.css">
+    <link rel="stylesheet" href="css/main.css">
 
     <title>TYPING GAME -chart-</title>
 </head>
@@ -45,7 +45,7 @@
 
     <!-- Optional JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
-    <script src="js/store.legacy.min.js"></script>
+    <script src="lib/js/store.legacy.min.js"></script>
     <script src="js/storedata.js"></script>
 
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -60,55 +60,40 @@
         crossorigin="anonymous"></script>
 
     <script>
-        var lineChartData = {
-            labels: ["1月", "2月", "3月", "4月", "5月", "6月"],
-            datasets: [
-                {
-                    label: "私",
-                    backgroundColor: /*"#f2dae8"*/"rgba(242,218,232,0.6)",
-                    borderColor: /*"#dd9cb4"*/"rgba(221,156,180,0.6)",
-                    data: [67, 65, 66, 70, 71, 77]
-                },
-                {
-                    label: "彼",
-                    backgroundColor: /*"#afd0ef"*/"rgba(175,208,239,0.6)",
-                    borderColor: /*"#fb7dd8"*/"rgba(143,183,221,0.6)",
-                    data: [57, 56, 55, 53, 56, 49]
-                }
-            ]
-
-        }
+        // *** data for display ***
+        let LABELS = [];
+        let DATA_SETS = [
+            {
+                label: "score[character / minute]",
+                backgroundColor: /*"#f2dae8"*/"rgba(242,218,232,0.6)",
+                borderColor: /*"#dd9cb4"*/"rgba(221,156,180,0.6)",
+                data: []
+            },
+        ];
 
         $(function () {
+            // *** set User ***
             $('#UserNameText').val(getCurrentUser());
 
-            var labels = [];
-            var datasets = [
-                {
-                    label: "score[character / minute]",
-                    backgroundColor: /*"#f2dae8"*/"rgba(242,218,232,0.6)",
-                    borderColor: /*"#dd9cb4"*/"rgba(221,156,180,0.6)",
-                    data: []
-                },
-            ];
-
-            var allUser = getAllUserData();
-            $.each(allUser[$('#UserNameText').val()].data, function (index, val) {
-                labels.push(formatDate(new Date(val.start), "MM/DD hh:mm"));
-                datasets[0].data.push(Math.floor(val.getLength * 1000.0 * 60 / val.time));
+            // *** get & set data ***
+            LABELS = [];
+            DATA_SETS[0].data = [];
+            $.each(getAllUserData()[$('#UserNameText').val()].data, function (index, val) {
+                LABELS.push(formatDate(new Date(val.start), "MM/DD hh:mm"));
+                DATA_SETS[0].data.push(Math.floor(val.getLength * 1000.0 * 60 / val.time));
             });
 
+            // *** display chart ***
             var ctx = $("#chart").get(0).getContext("2d");
             var myLineChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: labels,
-                    datasets: datasets,
+                    labels: LABELS,
+                    datasets: DATA_SETS,
                 },
-                data2: lineChartData,
                 options: {
                     responsive: true
-                    // 下記を追加すると線がまっすぐになります
+                    // for straight line
                     /* bezierCurve: false */
                 }
             });
