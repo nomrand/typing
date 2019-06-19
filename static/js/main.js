@@ -76,6 +76,7 @@ let SelectedWordData = {};
 let SelectedWordSpeed = 20000;
 function gameStart() {
     setElementEnable(false);
+    $('#InputText').focus();
 
     SelectedWordData = WORD_DATA[$("#ModeSelect").val()].data;
     SelectedWordSpeed = WORD_DATA[$("#ModeSelect").val()].speed;
