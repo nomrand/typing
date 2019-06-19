@@ -1,0 +1,3 @@
+*.pyc
+taticfiles
+db.sqlite3
