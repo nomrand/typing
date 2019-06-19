@@ -8,18 +8,9 @@ $(function () {
     // *** get user data & arrange ***
     // convert each-user-data to flat array 
     let allFlatArray = [];
-    $.each(getAllUserData(), function (user, val) {
-        let byUser = val.data.map(x => {
-            return {
-                user: user,
-                mode: x.mode,
-                chara_per_sec: (x.getLength * 1000.0 * 60 / x.time),
-                time: x.time,
-                get: x.get,
-                getLength: x.getLength,
-                date: formatDate(new Date(x.start)),
-            };
-        });
+    let user = getCurrentUser();
+    $.each(getUserData(user), function (index, data) {
+        let byUser = userFlatData(user, data);
         allFlatArray = allFlatArray.concat(byUser);
     });
     // sort by score
@@ -51,3 +42,15 @@ $(function () {
     });
 
 });
+
+function userFlatData(user, x) {
+    return {
+        user: user,
+        mode: x.mode,
+        chara_per_sec: (x.getLength * 1000.0 * 60 / x.time),
+        time: x.time,
+        get: x.get,
+        getLength: x.getLength,
+        date: formatDate(new Date(x.start)),
+    };
+}
