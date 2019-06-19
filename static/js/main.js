@@ -69,6 +69,11 @@ function setEvents() {
     $('#ResultSaveClose').click(function (e) {
         appendUserData($('#UserNameText').val(), ResultData);
     });
+
+    // for keypositon backgournd
+    $('#checkShowPosition').change(function () {
+        setTypeImage($(this).prop('checked'));
+    });
 }
 
 let ResultData = {};
@@ -217,4 +222,13 @@ function setElementEnable(isGameStop) {
 
     // Game Control (if isGameStop = true, can not control)
     $('#InputText').prop("disabled", isGameStop);
+}
+
+function setTypeImage(isSet) {
+    if (isSet) {
+        $('#gscreen').css('background-image', "url(img/keyposition.png)");
+        $('#gscreen').css('background-size', "100% 100%");
+    } else {
+        $('#gscreen').css('background-image', "none");
+    }
 }
